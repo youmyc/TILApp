@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/vapor/http.git",
         "state": {
           "branch": null,
-          "revision": "6973bf50dab8dd00e4daf8cb82ca72b33f5db016",
-          "version": "3.1.6"
+          "revision": "4c8c655932fdb409c11549eadabf27d3d61bc24c",
+          "version": "3.1.7"
         }
       },
       {

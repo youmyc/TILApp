@@ -28,3 +28,4 @@ final class AcronymPostgresSql: Codable {
 extension AcronymPostgresSql: PostgreSQLModel {}
 extension AcronymPostgresSql: Migration {}
 extension AcronymPostgresSql: Content {}
+extension AcronymPostgresSql: Parameter {}
