@@ -8,6 +8,15 @@ public func routes(_ router: Router) throws {
     router.get("hello") { req in
         return "Hello, world!"
     }
+    
+    let acronymsController = AcronymsController()
+    try router.register(collection: acronymsController)
+    
+    let userController = UsersController()
+    try router.register(collection: userController)
+    
+    let categoriesController = CategoriesController()
+    try router.register(collection: categoriesController)
 
     /// create
     /*
@@ -17,41 +26,37 @@ public func routes(_ router: Router) throws {
      3. Save the model using Fluent. This returns Future<Acronym> as it returns the model once it’s saved.”
     */
     // 1
-    router.post("api", "acronyms") { (req) -> Future<AcronymPostgresSql> in
-        // 2
-        return try req.content.decode(AcronymPostgresSql.self).flatMap(to: AcronymPostgresSql.self, { acronym in
-            // 3
-            return acronym.save(on: req)
-        })
-    }
-    
-    /// retrieve
-    router.get("api", "acronyms") { (req) -> Future<[AcronymPostgresSql]> in
-        return AcronymPostgresSql.query(on: req).all()
-    }
+//    router.post("api", "acronyms") { (req) -> Future<AcronymPostgresSql> in
+//        // 2
+//        return try req.content.decode(AcronymPostgresSql.self).flatMap(to: AcronymPostgresSql.self, { acronym in
+//            // 3
+//            return acronym.save(on: req)
+//        })
+//    }
+
     
     // 1
-    router.get("api","acronyms",AcronymPostgresSql.parameter) { (req) -> Future<AcronymPostgresSql> in
-        // 2
-        return try req.parameters.next(AcronymPostgresSql.self)
-    }
+//    router.get("api","acronyms",AcronymPostgresSql.parameter) { (req) -> Future<AcronymPostgresSql> in
+//        // 2
+//        return try req.parameters.next(AcronymPostgresSql.self)
+//    }
     
     /// update
     /**
      In RESTful APIs, updates to single resources use a PUT request, with the request data containing the new information
      */
     /// 1
-    router.put("api","acronyms",AcronymPostgresSql.parameter) { (req) -> Future<AcronymPostgresSql> in
-        // 2
-        return try flatMap(to: AcronymPostgresSql.self, req.parameters.next(AcronymPostgresSql.self), req.content.decode(AcronymPostgresSql.self), { (acronym, updateAcronym) in
-            // 3
-            acronym.short = updateAcronym.short
-            acronym.long = updateAcronym.long
-            
-            //4
-            return acronym.save(on: req)
-        })
-    }
+//    router.put("api","acronyms",AcronymPostgresSql.parameter) { (req) -> Future<AcronymPostgresSql> in
+//        // 2
+//        return try flatMap(to: AcronymPostgresSql.self, req.parameters.next(AcronymPostgresSql.self), req.content.decode(AcronymPostgresSql.self), { (acronym, updateAcronym) in
+//            // 3
+//            acronym.short = updateAcronym.short
+//            acronym.long = updateAcronym.long
+//
+//            //4
+//            return acronym.save(on: req)
+//        })
+//    }
     
     /**
      Here’s the play-by-play:
@@ -63,14 +68,14 @@ public func routes(_ router: Router) throws {
     
     /// delete
     // 1
-    router.delete("api","acronyms",AcronymPostgresSql.parameter) { (req) -> Future<HTTPStatus> in
-        // 2
-        return try req.parameters.next(AcronymPostgresSql.self)
-            // 3
-            .delete(on: req)
-            // 4
-            .transform(to: HTTPStatus.noContent)
-    }
+//    router.delete("api","acronyms",AcronymPostgresSql.parameter) { (req) -> Future<HTTPStatus> in
+//        // 2
+//        return try req.parameters.next(AcronymPostgresSql.self)
+//            // 3
+//            .delete(on: req)
+//            // 4
+//            .transform(to: HTTPStatus.noContent)
+//    }
     
     /**
      Here’s what this does:
@@ -104,20 +109,20 @@ public func routes(_ router: Router) throws {
      */
     
     /// filter
-    router.get("api", "acronyms", "search") {
-        req -> Future<[AcronymPostgresSql]> in
-        // 2
-        guard
-            let searchTerm = req.query[String.self, at: "term"] else {
-                throw Abort(.badRequest)
-        }
-        // 3
-        return AcronymPostgresSql.query(on: req)
-            .group(.or, closure: { (or) in
-                or.filter(\.short == searchTerm)
-                or.filter(\.long == searchTerm)
-            }).all()
-    }
+//    router.get("api", "acronyms", "search") {
+//        req -> Future<[AcronymPostgresSql]> in
+//        // 2
+//        guard
+//            let searchTerm = req.query[String.self, at: "term"] else {
+//                throw Abort(.badRequest)
+//        }
+//        // 3
+//        return AcronymPostgresSql.query(on: req)
+//            .group(.or, closure: { (or) in
+//                or.filter(\.short == searchTerm)
+//                or.filter(\.long == searchTerm)
+//            }).all()
+//    }
     /*
      Here’s what this extra code does:
      1.Create a filter group using the .or relation.
@@ -130,18 +135,18 @@ public func routes(_ router: Router) throws {
     /// first result
     
     // 1
-    router.get("api", "acronyms", "first") { (req) -> Future<AcronymPostgresSql> in
-        
-        // 2
-        return AcronymPostgresSql.query(on: req).first().map(to: AcronymPostgresSql.self, { (acronym) in
-            // 3
-            guard let acronym = acronym else{
-                throw Abort(.notFound)
-            }
-            // 4
-            return acronym
-        })
-    }
+//    router.get("api", "acronyms", "first") { (req) -> Future<AcronymPostgresSql> in
+//
+//        // 2
+//        return AcronymPostgresSql.query(on: req).first().map(to: AcronymPostgresSql.self, { (acronym) in
+//            // 3
+//            guard let acronym = acronym else{
+//                throw Abort(.notFound)
+//            }
+//            // 4
+//            return acronym
+//        })
+//    }
     
     /*
      Here’s what this function does:
@@ -154,8 +159,8 @@ public func routes(_ router: Router) throws {
     
     /// sort
     // 1
-    router.get("api", "acronyms", "sorted") { (req) -> Future<[AcronymPostgresSql]> in
-        // 2
-        return AcronymPostgresSql.query(on: req).sort(\.short, .descending).all()
-    }
+//    router.get("api", "acronyms", "sorted") { (req) -> Future<[AcronymPostgresSql]> in
+//        // 2
+//        return AcronymPostgresSql.query(on: req).sort(\.short, .descending).all()
+//    }
 }

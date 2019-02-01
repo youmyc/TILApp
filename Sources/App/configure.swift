@@ -95,7 +95,10 @@ public func PostgreSQLConfig(_ services: inout Services) throws{
     
     var migrations = MigrationConfig()
     // 4
+    migrations.add(model: User.self, database: .psql)
     migrations.add(model: AcronymPostgresSql.self, database: .psql)
+    migrations.add(model: Category.self, database: .psql)
+    migrations.add(model: AcronymCategoriesPivot.self, database: .psql)
     services.register(migrations)
     
     /*
