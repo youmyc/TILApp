@@ -6,7 +6,7 @@ import Vapor
 /// Called before your application initializes.
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
 //    try SQLiteConfig(&services)
-    try PostgreSQLConfig(&services)
+    try PostgreSQLConfig(&env, &services)
 }
 
 public func SQLiteConfig(_ services: inout Services) throws{
@@ -67,7 +67,7 @@ public func SQLiteConfig(_ services: inout Services) throws{
      */
 }
 
-public func PostgreSQLConfig(_ services: inout Services) throws{
+public func PostgreSQLConfig(_ env: inout Environment, _ services: inout Services) throws{
     // 2
     try services.register(FluentPostgreSQLProvider())
     
@@ -81,13 +81,29 @@ public func PostgreSQLConfig(_ services: inout Services) throws{
     
     // Configure a database
     var databases = DatabasesConfig()
+    let hostname = Environment.get("DATABASE_HOSTNAME") ?? "localhost"
+    let username = Environment.get("DATABASE_USER") ?? "youmy"
+    
+    let databaseName: String
+    let databasePort: Int
+    // 1
+    if (env == .testing) {
+        databaseName = "vapor-test"
+        databasePort = 5432
+    } else {
+        databaseName = Environment.get("DATABASE_DB") ?? "vapor"
+        databasePort = 5432
+    }
+    
+    let password = Environment.get("DATABASE_PASSWORD") ?? "a123456"
+    
     // 3
     let databaseConfig = PostgreSQLDatabaseConfig(
-        hostname: "localhost",
-        port:5432,
-        username: "youmy",
-        database: "vapor",
-        password: "a123456")
+        hostname: hostname,
+        port:databasePort,
+        username: username,
+        database: databaseName,
+        password: password)
     
     let postgresql = PostgreSQLDatabase(config: databaseConfig)
     databases.add(database: postgresql, as: .psql)
